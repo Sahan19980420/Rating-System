@@ -75,7 +75,7 @@ class _ForgetPWPageState extends State<ForgetPWPage> {
                                 ],
                               ),
                               style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(240, 40),
+                                fixedSize: const Size(260, 40),
                                 backgroundColor: Colors
                                     .blue, // Set the background color to green
                                 shape: RoundedRectangleBorder(
@@ -183,7 +183,7 @@ class _ForgetPWPageState extends State<ForgetPWPage> {
 
 
                                   SizedBox(
-                                    height: 240,
+                                    height: 220,
                                   ),
 
 

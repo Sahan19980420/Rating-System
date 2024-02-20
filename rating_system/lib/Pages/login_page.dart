@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(160, 40),
+                            fixedSize: const Size(180, 40),
                             backgroundColor: Colors
                                 .blue, // Set the background color to green
                             shape: RoundedRectangleBorder(

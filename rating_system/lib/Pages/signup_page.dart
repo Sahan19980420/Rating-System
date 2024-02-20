@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import '../Componants/glass_box.dart';
+import 'login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -16,6 +19,145 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+
+
+  Future<void> createUser(BuildContext context) async {
+    // Validate input fields
+    if (userNameController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty ||
+        confirmPasswordController.text.isEmpty ) {
+      // Show an error message if any of the required fields are empty
+      showRequiredFieldsSnackBar(context);
+      return;
+    }
+
+    // Other validation logic can be added here
+
+    // If all validations pass, proceed with the registration
+    var url = "http://api.workspace.cbs.lk/createUser.php";
+
+    var data = {
+      "user_name": userNameController.text.trim(),
+      "email": emailController.text.toString().trim(),
+      "password_": passwordController.text.toString().trim(),
+      "active": '1',
+    };
+
+    http.Response res = await http.post(
+      Uri.parse(url),
+      body: data,
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      encoding: Encoding.getByName("utf-8"),
+    );
+
+    if (res.statusCode.toString() == "200") {
+      if (jsonDecode(res.body) == "true") {
+        if (!mounted) return;
+        showSuccessSnackBar(context); // Show the success SnackBar
+        Navigator.of(context).pushNamed('/login');
+      } else {
+        if (!mounted) return;
+        showError(context);
+      }
+    } else {
+      if (!mounted) return;
+      showError(context);
+    }
+  }
+
+
+  void showSuccessSnackBar(BuildContext context) {
+    final snackBar = SnackBar(
+      backgroundColor: Colors.green, // Custom background color
+      content: Row(
+        children: [
+          Icon(Icons.check_circle_outline, color: Colors.white), // Custom icon
+          SizedBox(width: 8), // Space between icon and text
+          Expanded(
+            child: Text(
+              'Account created successful! You can login now!',
+              style: TextStyle(color: Colors.white, fontSize: 16), // Custom text style
+            ),
+          ),
+        ],
+      ),
+      action: SnackBarAction(
+        label: 'Undo',
+        textColor: Colors.white, // Custom text color for the action
+        onPressed: () {
+          // Handle action (e.g., undo the submission)
+        },
+      ),
+      duration: Duration(seconds: 5), // Custom duration
+      behavior: SnackBarBehavior.floating, // Make it floating
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), // Custom shape
+      margin: EdgeInsets.all(10), // Margin from the edges
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Custom padding
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  // void _clearFormInputs() {
+  //   // Reset the controllers
+  //   _nameController.clear();
+  //   _phoneController.clear();
+  //   _emailController.clear();
+  //   _messageController.clear();
+  //
+  //   // Reset other stateful values to their initial states
+  //   setState(() {
+  //     _selectedTaxType = null;
+  //   });
+  // }
+
+  void showRequiredFieldsSnackBar(BuildContext context) {
+    final snackBar = SnackBar(
+      backgroundColor: Colors.red, // Custom background color for emphasis
+      content: Row(
+        children: [
+          Icon(Icons.warning_amber_outlined, color: Colors.white), // Custom icon for warning
+          SizedBox(width: 8), // Space between icon and text
+          Text(
+            'Please fill in all required fields', // The message
+            style: TextStyle(color: Colors.white, fontSize: 16), // Custom text style
+          ),
+        ],
+      ),
+      duration: Duration(seconds: 5), // Custom duration
+      behavior: SnackBarBehavior.floating, // Make it floating
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), // Custom shape
+      margin: EdgeInsets.all(10), // Margin from the edges
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Custom padding
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void showError(BuildContext context) {
+    final snackBar = SnackBar(
+      backgroundColor: Colors.red, // Custom background color for emphasis
+      content: Row(
+        children: [
+          Icon(Icons.warning_amber_outlined, color: Colors.white), // Custom icon for warning
+          SizedBox(width: 8), // Space between icon and text
+          Text(
+            'Error', // The message
+            style: TextStyle(color: Colors.white, fontSize: 16), // Custom text style
+          ),
+        ],
+      ),
+      duration: Duration(seconds: 5), // Custom duration
+      behavior: SnackBarBehavior.floating, // Make it floating
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), // Custom shape
+      margin: EdgeInsets.all(10), // Margin from the edges
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Custom padding
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +223,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ],
                               ),
                               style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(170, 40),
+                                fixedSize: const Size(190, 40),
                                 backgroundColor: Colors
                                     .blue, // Set the background color to green
                                 shape: RoundedRectangleBorder(
@@ -296,7 +438,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                           horizontal: 10.0, vertical: 20),
                                       child: ElevatedButton(
                                         onPressed: () {
-
+                                          createUser(context);
                                           // Action when button is pressed
                                         },
                                         child: const Text(
@@ -320,14 +462,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                   ),
 
                                   SizedBox(
-                                    height: 15,
+                                    height: 10,
                                   ),
                                   Divider(
                                     height: 2,
                                     color: Colors.white,
                                   ),
                                   SizedBox(
-                                    height: 15,
+                                    height: 10,
                                   ),
 
                                   Center(child: Image.asset('images/google.png',width: 240,)),
