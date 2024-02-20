@@ -32,6 +32,12 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
+    // Check if password and confirm password match
+    if (passwordController.text != confirmPasswordController.text) {
+      // Show an error message if passwords do not match
+      showPasswordMismatchSnackBar(context);
+      return;
+    }
     // Other validation logic can be added here
 
     // If all validations pass, proceed with the registration
@@ -101,19 +107,6 @@ class _SignUpPageState extends State<SignUpPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  // void _clearFormInputs() {
-  //   // Reset the controllers
-  //   _nameController.clear();
-  //   _phoneController.clear();
-  //   _emailController.clear();
-  //   _messageController.clear();
-  //
-  //   // Reset other stateful values to their initial states
-  //   setState(() {
-  //     _selectedTaxType = null;
-  //   });
-  // }
-
   void showRequiredFieldsSnackBar(BuildContext context) {
     final snackBar = SnackBar(
       backgroundColor: Colors.red, // Custom background color for emphasis
@@ -158,6 +151,29 @@ class _SignUpPageState extends State<SignUpPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+
+
+  void showPasswordMismatchSnackBar(BuildContext context) {
+    final snackBar = SnackBar(
+      backgroundColor: Colors.red, // Custom background color for emphasis
+      content: Row(
+        children: [
+          Icon(Icons.error_outline, color: Colors.white), // Custom icon for error
+          SizedBox(width: 8), // Space between icon and text
+          Text(
+            'Passwords do not match', // The message
+            style: TextStyle(color: Colors.white, fontSize: 16), // Custom text style
+          ),
+        ],
+      ),
+      duration: Duration(seconds: 5), // Custom duration
+      behavior: SnackBarBehavior.floating, // Make it floating
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), // Custom shape
+      margin: EdgeInsets.all(10), // Margin from the edges
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Custom padding
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context) {
