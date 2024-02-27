@@ -19,6 +19,17 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    // Always remember to dispose of FocusNodes
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
+    super.dispose();
+  }
+
 
 
   Future<void> createUser(BuildContext context) async {
@@ -282,6 +293,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                     height: 10,
                                   ),
                                   TextField(
+                                    onEditingComplete: () {
+                                      // Define what you want to do when editing is complete. For example:
+                                      FocusScope.of(context).nextFocus(); // Move focus to the next field
+                                    },
                                     controller: userNameController,
                                     onChanged: (String value) {
                                       // Implement your filtering logic here if needed
@@ -316,6 +331,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                   ),
 
                                   TextField(
+                                    onEditingComplete: () {
+                                      // Define what you want to do when editing is complete. For example:
+                                      FocusScope.of(context).nextFocus(); // Move focus to the next field
+                                    },
                                     controller: emailController,
                                     onChanged: (String value) {
                                       // Implement your filtering logic here if needed
@@ -349,6 +368,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                     height: 10,
                                   ),
                                   TextField(
+                                    onEditingComplete: () {
+                                      // Move focus to the next field explicitly
+                                      _confirmPasswordFocusNode.requestFocus();
+                                    },
                                     controller: passwordController,
                                     onChanged: (String value) {
                                       // Implement your filtering logic here if needed
@@ -399,6 +422,12 @@ class _SignUpPageState extends State<SignUpPage> {
                                   ),
 
                                   TextField(
+                                    focusNode: _confirmPasswordFocusNode,
+                                    onEditingComplete: () {
+                                      // Define what you want to do when editing is complete. For example:
+                                      createUser(context);
+                                    },
+
                                     controller: confirmPasswordController,
                                     onChanged: (String value) {
                                       // Implement your filtering logic here if needed

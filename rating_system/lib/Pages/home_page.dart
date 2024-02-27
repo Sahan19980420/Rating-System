@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rating_system/Pages/profile_popup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../colors.dart';
 
@@ -11,6 +13,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
+
+  String userName = "";
+  String email = "";
+  String password_ = "";
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  void loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('user_name') ?? "";
+      email = prefs.getString('email') ?? "";
+      password_ = prefs.getString('password_') ?? "";
+      print('Loaded data to Home Page');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,10 +112,23 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         actions: [
+
+          Text(
+            userName,
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const ProfilePopUp();
+                    },
+                  );
+                },
                 icon: Icon(
                   Icons.person_pin,
                   color: Colors.white,

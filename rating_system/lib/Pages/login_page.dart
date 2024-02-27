@@ -127,6 +127,10 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 10,
                               ),
                               TextField(
+                                onEditingComplete: () {
+                                  // Define what you want to do when editing is complete. For example:
+                                  FocusScope.of(context).nextFocus(); // Move focus to the next field
+                                },
                                 controller: emailController,
                                 onChanged: (String value) {
                                   // Implement your filtering logic here if needed
@@ -160,6 +164,9 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 10,
                               ),
                               TextField(
+                                onSubmitted: (String value) {
+                                  _login();
+                                },
                                 controller: passwordController,
                                 onChanged: (String value) {
                                   // Implement your filtering logic here if needed
