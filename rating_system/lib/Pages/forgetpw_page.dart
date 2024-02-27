@@ -54,7 +54,7 @@ class _ForgetPWPageState extends State<ForgetPWPage> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context).pushNamed('/home');
+                                Navigator.of(context).pushNamed('/welcome');
                                 // Action when button is pressed
                               },
                               child: Row(

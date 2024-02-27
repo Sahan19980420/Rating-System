@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:rating_system/Componants/custom_snackBar.dart';
 import 'package:rating_system/Componants/glass_box.dart';
+import 'package:http/http.dart' as http;
+import 'package:rating_system/Pages/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -57,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/home');
+                            Navigator.of(context).pushNamed('/welcome');
                             // Action when button is pressed
                           },
                           child: Row(
@@ -236,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                                       horizontal: 10.0, vertical: 25),
                                   child: ElevatedButton(
                                     onPressed: () {
-
+                                      _login();
                                       // Action when button is pressed
                                     },
                                     child: const Text(
@@ -261,7 +267,8 @@ class _LoginPageState extends State<LoginPage> {
                               Center(
                                 child: TextButton(
                                     onPressed: () {
-                                      Navigator.of(context).pushNamed('/forget-password');
+                                      Navigator.of(context)
+                                          .pushNamed('/forget-password');
                                     },
                                     child: Text(
                                       "Forget Password?",
@@ -282,8 +289,12 @@ class _LoginPageState extends State<LoginPage> {
                               SizedBox(
                                 height: 15,
                               ),
-                              
-                              Center(child: Image.asset('images/google.png',width: 240,)),
+
+                              Center(
+                                  child: Image.asset(
+                                'images/google.png',
+                                width: 240,
+                              )),
 
                               SizedBox(
                                 height: 15,
@@ -299,10 +310,10 @@ class _LoginPageState extends State<LoginPage> {
                                       color: Colors.white,
                                     ),
                                   ),
-
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.of(context).pushNamed('/signup');
+                                      Navigator.of(context)
+                                          .pushNamed('/signup');
                                     },
                                     child: Text(
                                       "Signup",
@@ -315,8 +326,6 @@ class _LoginPageState extends State<LoginPage> {
                                 ],
                               )
 
-
-
                               // Container(
                               //   margin: EdgeInsets.all(10),
                               //   width: 240,
@@ -327,7 +336,6 @@ class _LoginPageState extends State<LoginPage> {
                               //     ),
                               //   ),
                               // )
-
                             ],
                           ),
                         ),
@@ -343,5 +351,91 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+
+  Future<void> _login() async {
+    bool success = await login(context);
+    if (success) {
+      // Only navigate if login is successful and the account is activated
+      Navigator.of(context)
+          .pushNamed('/home');
+    }
+  }
+
+  Future<bool> login(BuildContext context) async {
+    if (emailController.text.trim().isEmpty) {
+      showCustomSnackBar(context,
+          message: "Email can't be empty",
+          backgroundColor: Colors.redAccent,
+          textColor: Colors.white,
+          icon: Icons.warning_amber_outlined);
+      return false;
+    }
+
+    if (emailController.text.trim().length < 3) {
+      showCustomSnackBar(context,
+          message: "Invalid Email!",
+          backgroundColor: Colors.yellow,
+          textColor: Colors.white,
+          icon: Icons.warning_amber_outlined);
+      return false;
+    }
+
+    var url = "http://api.workspace.cbs.lk/login.php";
+    var data = {
+      "email": emailController.text.toString().trim(),
+      "password_": passwordController.text.toString().trim(),
+    };
+
+    http.Response res = await http.post(
+      Uri.parse(url),
+      body: data,
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      encoding: Encoding.getByName("utf-8"),
+    );
+
+    if (res.statusCode == 200) {
+      Map<String, dynamic> result = jsonDecode(res.body);
+      print(result);
+      bool status = result['status'];
+      if (status) {
+        if (result['active'] == '1') {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('login_state', '1');
+          prefs.setString('user_name', result['user_name']);
+          prefs.setString('email', result['email']);
+          prefs.setString('password_', result['password_']);
+          prefs.setString('active', result['active']);
+          // Successfully logged in and account is activated
+          return true;
+        } else {
+          showCustomSnackBar(context,
+              message: "Account Deactivated",
+              backgroundColor: Colors.redAccent,
+              textColor: Colors.white,
+              icon: Icons.warning_amber_outlined);
+
+          return false; // Account deactivated
+        }
+      } else {
+        showCustomSnackBar(context,
+            message: "Incorrect Password",
+            backgroundColor: Colors.yellow,
+            textColor: Colors.white,
+            icon: Icons.warning_amber_outlined);
+        return false; // Incorrect password
+      }
+    } else {
+      showCustomSnackBar(context,
+          message: "Error",
+          backgroundColor: Colors.redAccent,
+          textColor: Colors.white,
+          icon: Icons.warning_amber_outlined);
+      return false; // Error during login
+    }
   }
 }

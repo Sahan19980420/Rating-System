@@ -218,7 +218,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context).pushNamed('/home');
+                                Navigator.of(context).pushNamed('/welcome');
                                 // Action when button is pressed
                               },
                               child: Row(
