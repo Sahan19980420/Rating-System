@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rating_system/Pages/post_Item_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rating_system/Pages/forgetpw_page.dart';
 import 'package:rating_system/Pages/home_page.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => LandingPage(),
         '/forget-password': (context) => ForgetPWPage(),
         '/home': (context) => HomePage(),
+        '/post-item': (context) => PostItemPage(),
       },
       home: _decideMainPage(), // Use _decideMainPage to determine the initial route
     );

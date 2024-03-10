@@ -112,12 +112,10 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         actions: [
-
           Text(
             userName,
             style: TextStyle(color: Colors.white, fontSize: 16),
           ),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: IconButton(
@@ -133,6 +131,30 @@ class _HomePageState extends State<HomePage> {
                   Icons.person_pin,
                   color: Colors.white,
                 )),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/post-item');
+              },
+              child: const Text(
+                'Post Your Item',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(160, 20),
+                backgroundColor:
+                    Colors.amberAccent, // Set the background color to green
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(30), // Set the border radius
+                ),
+              ),
+            ),
           )
         ],
       ),
