@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rating_system/Pages/profile_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,10 +24,65 @@ class _PostItemPageState extends State<PostItemPage> {
   String email = "";
   String password_ = "";
 
+  static int _currentId = 0;
+
+  List<XFile>? _imageFileList;
+
+  void _pickImages() async {
+    try {
+      final List<XFile>? selectedImages = await ImagePicker().pickMultiImage(
+        maxWidth: 500,
+        maxHeight: 500,
+      );
+      if (selectedImages!.isNotEmpty) {
+        setState(() {
+          _imageFileList = selectedImages;
+        });
+      }
+    } catch (e) {
+      // Handle any errors
+    }
+  }
+
+  Widget _buildImagePreview() {
+    if (_imageFileList != null) {
+      return SizedBox( // Wrap the ListView with a SizedBox to provide a fixed height
+        height: 500.0, // Specify the height of the preview area
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _imageFileList!.length,
+            itemBuilder: (context, index) {
+              if (kIsWeb) {
+                return Image.network(_imageFileList![index].path);
+              } else {
+                return Image.file(File(_imageFileList![index].path));
+              }
+            },
+          ),
+        ),
+      );
+    } else {
+      return const Text("No images selected.");
+    }
+  }
+
+
+
+
   @override
   void initState() {
     super.initState();
     loadData();
+    generateNextPostId();
+  }
+
+  static String generateNextPostId() {
+    // Increment the postId
+    _currentId++;
+    // Return the postId formatted as a 6-digit string, e.g., "000001"
+    return _currentId.toString().padLeft(6, '0');
   }
 
   void loadData() async {
@@ -36,6 +94,13 @@ class _PostItemPageState extends State<PostItemPage> {
       print('Loaded data to Home Page');
     });
   }
+
+  void createNewPost() {
+    String postId = generateNextPostId();
+    print("Generated Post ID: $postId");
+    // Use the postId for your new post here
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -191,22 +256,17 @@ class _PostItemPageState extends State<PostItemPage> {
                     ),
                     // Add photo buttons and other form fields
                     SizedBox(height: 10,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(
-                        5, // Max photo count
-                        (index) => IconButton(
-                          icon: Icon(
-                            index == 0
-                                ? Icons.add_a_photo
-                                : Icons.photo_size_select_actual,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {
-                            // TODO: Implement image picker functionality
-                          },
-                        ),
+
+                    _buildImagePreview(),
+                    SizedBox(height: 15,),
+                    ElevatedButton(
+                      onPressed: () {
+                        _pickImages();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.teal, // Set the background color
                       ),
+                      child: const Text('Upload Images',style: TextStyle(color: Colors.white),),
                     ),
                     const SizedBox(height: 25),
 

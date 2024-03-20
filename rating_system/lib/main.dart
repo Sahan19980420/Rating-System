@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:rating_system/Pages/post_Item_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
       routes: {
         '/login': (context) => LoginPage(),
@@ -43,4 +46,27 @@ class MyApp extends StatelessWidget {
       return LandingPage();
     }
   }
+}
+
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods
+  @override
+  Widget buildScrollbar(BuildContext context, Widget child, ScrollableDetails details) {
+    // Use your custom scrollbar here or return the child directly to use the default scrollbar
+    return child;
+  }
+
+  @override
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
+  }
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad
+    // Add other device kinds as needed
+  };
 }
