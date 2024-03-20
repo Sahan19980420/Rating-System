@@ -6,6 +6,7 @@ import 'package:rating_system/Pages/profile_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../colors.dart';
+import 'package:http/http.dart' as http;
 
 class PostItemPage extends StatefulWidget {
   const PostItemPage({super.key});
@@ -95,12 +96,45 @@ class _PostItemPageState extends State<PostItemPage> {
     });
   }
 
-  void createNewPost() {
+  void createNewPost() async {
     String postId = generateNextPostId();
     print("Generated Post ID: $postId");
-    // Use the postId for your new post here
+    if (_imageFileList != null && _imageFileList!.isNotEmpty) {
+      await uploadImages(_imageFileList!, postId);
+      // Additional post creation logic here
+    } else {
+      print("No images selected.");
+    }
   }
 
+
+  Future<void> uploadImages(List<XFile> images, String postId) async {
+    final uri = Uri.parse('http://api.workspace.cbs.lk/upload.php');
+
+    for (var image in images) {
+      // For Flutter web, use bytes to upload
+      var bytes = await image.readAsBytes();
+
+      // Create a MultipartFile from bytes
+      var multipartFile = http.MultipartFile.fromBytes(
+        'image', // Field name for the file
+        bytes,
+        filename: image.name, // Filename
+      );
+
+      var request = http.MultipartRequest('POST', uri)
+        ..fields['post_id'] = postId
+        ..files.add(multipartFile);
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        print('Image uploaded');
+      } else {
+        print('Image upload failed');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -277,6 +311,7 @@ class _PostItemPageState extends State<PostItemPage> {
 
                     ElevatedButton(
                       onPressed: () {
+                        createNewPost();
                         // Implement the logic to post the item when the button is pressed
                       },
                       style: ElevatedButton.styleFrom(
