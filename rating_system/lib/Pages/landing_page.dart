@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Componants/custom_snackBar.dart';
 import '../Componants/glass_box.dart';
+import '../Componants/post_images.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -514,59 +515,66 @@ class _LandingPageState extends State<LandingPage> {
         ],
       ),
 
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                margin: EdgeInsets.all(25),
-                height: 300,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage('images/topImage.jpg'), // Replace with your image path
-                    fit: BoxFit.cover, // Adjust the BoxFit as needed
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.6),
-                      BlendMode.srcOver,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  margin: EdgeInsets.all(25),
+                  height: 300,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage('images/topImage.jpg'), // Replace with your image path
+                      fit: BoxFit.cover, // Adjust the BoxFit as needed
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.6),
+                        BlendMode.srcOver,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Positioned.fill(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Find the Best Products',
-                        style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          'Discover the World of Reviews',
+                Positioned.fill(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Find the Best Products',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+        
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            'Discover the World of Reviews',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          )
+              ],
+            ),
+        
+            ImageDisplayPage(postId: '000003'),
 
-        ],
+            Image.network(
+    'http://api.workspace.cbs.lk/uploads/000007/scaled_ser02.png'),
+        
+          ],
+        ),
       ),
 
     );

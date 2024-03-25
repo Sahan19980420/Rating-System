@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rating_system/Componants/post_images.dart';
 import 'package:rating_system/Pages/profile_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -158,58 +159,62 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                margin: EdgeInsets.all(25),
-                height: 300,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage(
-                        'images/topImage.jpg'), // Replace with your image path
-                    fit: BoxFit.cover, // Adjust the BoxFit as needed
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.6),
-                      BlendMode.srcOver,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  margin: EdgeInsets.all(25),
+                  height: 300,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'images/topImage.jpg'), // Replace with your image path
+                      fit: BoxFit.cover, // Adjust the BoxFit as needed
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.6),
+                        BlendMode.srcOver,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Positioned.fill(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Find the Best Products',
-                        style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          'Discover the World of Reviews',
+                Positioned.fill(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Find the Best Products',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            'Discover the World of Reviews',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          )
-        ],
+              ],
+            ),
+            
+            ImageDisplayPage(postId: '000003')
+          ],
+        ),
       ),
     );
   }
